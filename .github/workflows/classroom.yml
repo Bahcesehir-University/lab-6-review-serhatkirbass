@@ -1,0 +1,80 @@
+name: Autograding Tests
+'on':
+- push
+- repository_dispatch
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Constructors & Destructor
+      id: constructors-destructor
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Constructors & Destructor
+        setup-command: make
+        command: make test1
+        timeout: 10
+        max-score: 20
+    - name: Copy Constructor
+      id: copy-constructor
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Copy Constructor
+        setup-command: make
+        command: make test2
+        timeout: 10
+        max-score: 15
+    - name: Encapsulation (Getters/Setters)
+      id: encapsulation-getters-setters
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Encapsulation (Getters/Setters)
+        setup-command: make
+        command: make test3
+        timeout: 10
+        max-score: 15
+    - name: String Operations
+      id: string-operations
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: String Operations
+        setup-command: make
+        command: make test4
+        timeout: 10
+        max-score: 10
+    - name: Operator Overloading
+      id: operator-overloading
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Operator Overloading
+        setup-command: make
+        command: make test5
+        timeout: 10
+        max-score: 25
+    - name: Function Overloading
+      id: function-overloading
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Function Overloading
+        setup-command: make
+        command: make test6
+        timeout: 10
+        max-score: 15
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        CONSTRUCTORS-DESTRUCTOR_RESULTS: "${{steps.constructors-destructor.outputs.result}}"
+        COPY-CONSTRUCTOR_RESULTS: "${{steps.copy-constructor.outputs.result}}"
+        ENCAPSULATION-GETTERS-SETTERS_RESULTS: "${{steps.encapsulation-getters-setters.outputs.result}}"
+        STRING-OPERATIONS_RESULTS: "${{steps.string-operations.outputs.result}}"
+        OPERATOR-OVERLOADING_RESULTS: "${{steps.operator-overloading.outputs.result}}"
+        FUNCTION-OVERLOADING_RESULTS: "${{steps.function-overloading.outputs.result}}"
+      with:
+        runners: constructors-destructor,copy-constructor,encapsulation-getters-setters,string-operations,operator-overloading,function-overloading
